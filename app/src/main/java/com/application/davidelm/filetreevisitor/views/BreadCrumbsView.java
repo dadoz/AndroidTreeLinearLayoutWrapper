@@ -1,35 +1,60 @@
 package com.application.davidelm.filetreevisitor.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.widget.HorizontalScrollView;
-
 import com.application.davidelm.filetreevisitor.R;
+import com.application.davidelm.filetreevisitor.adapter.BreadCrumbsAdapter;
 
-public class BreadCrumbsView extends HorizontalScrollView {
+import java.util.ArrayList;
+
+public class BreadCrumbsView extends RecyclerView {
+
+
     public BreadCrumbsView(Context context) {
         super(context);
         initView();
     }
 
-
-    public BreadCrumbsView(Context context, AttributeSet attrs) {
+    public BreadCrumbsView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initView();
     }
 
-    public BreadCrumbsView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public BreadCrumbsView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
         initView();
     }
 
-    public BreadCrumbsView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initView();
-    }
-
+    /**
+     * init view setting up root breadcrumb
+     */
     private void initView() {
-        inflate(getContext(), R.layout.breadcrumbs_layout, this);
+        setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("root");
+
+        //set layout manager and adapter
+        setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        setAdapter(new BreadCrumbsAdapter(list));
+    }
+
+    /**
+     *
+     * @param breadCrumb
+     */
+    public void addBreadCrumb(String breadCrumb) {
+        ((BreadCrumbsAdapter) getAdapter()).addItem(breadCrumb);
+    }
+    /**
+     *
+     * @param breadCrumb
+     */
+    public void remmoveBreadCrumb(String breadCrumb) {
+        ((BreadCrumbsAdapter) getAdapter()).removeItem(breadCrumb);
     }
 
 }
