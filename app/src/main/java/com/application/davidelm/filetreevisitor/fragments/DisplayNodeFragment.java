@@ -15,6 +15,7 @@ import com.application.davidelm.filetreevisitor.R;
 import com.application.davidelm.filetreevisitor.presenter.DisplayNodePresenter;
 import com.application.davidelm.filetreevisitor.treeFileView.TreeNode;
 import com.application.davidelm.filetreevisitor.utils.Utils;
+import com.application.davidelm.filetreevisitor.views.BreadCrumbsView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
     private static final String TAG = "DisplayNodeFragment";
     private View mainDisplayLayoutId;
     private DisplayNodePresenter presenter;
+    private BreadCrumbsView breadCrumbsView;
 
     @Nullable
     @Override
@@ -30,6 +32,9 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
         View view = inflater.inflate(R.layout.display_node_fragment, container, false);
         mainDisplayLayoutId = view.findViewById(R.id.mainDisplayLayoutId);
         presenter = DisplayNodePresenter.getInstance(new WeakReference<>(getActivity()));
+
+        breadCrumbsView = (BreadCrumbsView) getActivity().findViewById(R.id.breadCrumbsViewId);
+
         onInitView();
         return view;
     }
@@ -67,6 +72,7 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
 
     @Override
     public void onNodeCLick(TreeNode node) {
+        breadCrumbsView.addBreadCrumb(node.getValue().toString());
         //get support frag manager
         getActivity()
                 .getSupportFragmentManager()
