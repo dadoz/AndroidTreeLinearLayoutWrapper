@@ -45,6 +45,7 @@ public class DisplayNodePresenter {
         TreeNode parent = new TreeNode("MyParentNode");
         TreeNode child0 = new TreeNode("ChildNode0");
         TreeNode child1 = new TreeNode("ChildNode1");
+        child0.addChild(new TreeNode("Test Child of Child"));
         parent.addChildren(child0, child1);
         root.addChild(parent);
         return root;

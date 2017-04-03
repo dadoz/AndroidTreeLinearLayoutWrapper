@@ -10,6 +10,7 @@ import android.view.View;
 import com.application.davidelm.filetreevisitor.fragments.DisplayNodeFragment;
 import com.application.davidelm.filetreevisitor.presenter.DisplayNodePresenter;
 import com.application.davidelm.filetreevisitor.treeFileView.TreeNode;
+import com.application.davidelm.filetreevisitor.utils.Utils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements OnNodeClickListen
         //get support frag manager
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainerId, buildFragment(parentNode))
+                .replace(R.id.fragmentContainerId, Utils.buildFragment(parentNode))
                 .commit();
 
     }
@@ -46,13 +47,6 @@ public class MainActivity extends AppCompatActivity implements OnNodeClickListen
 //        }
     }
 
-    private DisplayNodeFragment buildFragment(TreeNode node) {
-        DisplayNodeFragment frag = new DisplayNodeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(TreeNode.TREE_NODE_PARCELABLE, node);
-        frag.setArguments(bundle);
-        return frag;
-    }
 
 
     @Override
