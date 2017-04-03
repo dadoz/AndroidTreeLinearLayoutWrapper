@@ -18,6 +18,7 @@ public class DisplayNodePresenter {
     private static DisplayNodePresenter instance;
     private WeakReference<OnNodeVisitCompleted> onNodeVisitCompletedLst;
     private static WeakReference<Activity> activityRef;
+    private TreeNode currentParentNode;
 
     private DisplayNodePresenter() {
         //treeview
@@ -61,6 +62,7 @@ public class DisplayNodePresenter {
     }
 
     public void buildViewsByNodeChildren(TreeNode parentNode) {
+        this.currentParentNode = parentNode;
         ArrayList<View> list = new ArrayList<>();
         for (TreeNode node : parentNode.getChildren()) {
             list.add(expandTreeView.displayNode(activityRef, R.layout.node_item, node));
@@ -72,5 +74,23 @@ public class DisplayNodePresenter {
 
     public void init(WeakReference<OnNodeVisitCompleted> lst2) {
         this.onNodeVisitCompletedLst = lst2;
+    }
+
+    public void removeFirstNode() {
+        if (currentParentNode != null &&
+                currentParentNode.getChildren().size() != 0) {
+            currentParentNode.deleteChild(currentParentNode.getChildren().get(0));
+            buildViewsByNodeChildren(currentParentNode);
+        }
+    }
+
+    /**
+     * not optimized
+     */
+    public void addNode() {
+        if (currentParentNode != null) {
+            currentParentNode.addChild(new TreeNode("ChildNode" + currentParentNode.getChildren().size()));
+            buildViewsByNodeChildren(currentParentNode);
+        }
     }
 }

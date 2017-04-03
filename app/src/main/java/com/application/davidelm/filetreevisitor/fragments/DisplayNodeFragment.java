@@ -20,11 +20,13 @@ import com.application.davidelm.filetreevisitor.views.BreadCrumbsView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class DisplayNodeFragment extends Fragment implements OnNodeClickListener, OnNodeVisitCompleted {
+public class DisplayNodeFragment extends Fragment implements OnNodeClickListener, OnNodeVisitCompleted, View.OnClickListener {
     private static final String TAG = "DisplayNodeFragment";
     private View mainDisplayLayoutId;
     private DisplayNodePresenter presenter;
     private BreadCrumbsView breadCrumbsView;
+    private View removeNodeButton;
+    private View addNodeButton;
 
     @Nullable
     @Override
@@ -33,10 +35,16 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
         mainDisplayLayoutId = view.findViewById(R.id.mainDisplayLayoutId);
         presenter = DisplayNodePresenter.getInstance(new WeakReference<>(getActivity()));
 
-        breadCrumbsView = (BreadCrumbsView) getActivity().findViewById(R.id.breadCrumbsViewId);
-
+        bindView(view);
         onInitView();
         return view;
+    }
+
+    private void bindView(View view) {
+        breadCrumbsView = (BreadCrumbsView) getActivity().findViewById(R.id.breadCrumbsViewId);
+        addNodeButton = view.findViewById(R.id.addNodeButtonId);
+        removeNodeButton = view.findViewById(R.id.removeNodeButtonId);
+
     }
 
     /**
@@ -48,6 +56,9 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
 
         TreeNode node = retrieveTreeNode();
         presenter.buildViewsByNodeChildren(node);
+
+        addNodeButton.setOnClickListener(this);
+        removeNodeButton.setOnClickListener(this);
     }
 
     /**
@@ -64,6 +75,7 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
 
     @Override
     public void addAllNodeViews(ArrayList<View> views) {
+        ((ViewGroup) mainDisplayLayoutId).removeAllViews();
         for (View view: views) {
             ((ViewGroup) mainDisplayLayoutId).addView(view);
         }
@@ -82,4 +94,15 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
 
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.addNodeButtonId:
+                presenter.addNode();
+                break;
+            case R.id.removeNodeButtonId:
+                presenter.removeFirstNode();
+                break;
+        }
+    }
 }
