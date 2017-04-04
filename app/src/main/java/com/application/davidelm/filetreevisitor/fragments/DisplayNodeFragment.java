@@ -16,11 +16,12 @@ import com.application.davidelm.filetreevisitor.presenter.DisplayNodePresenter;
 import com.application.davidelm.filetreevisitor.treeFileView.TreeNode;
 import com.application.davidelm.filetreevisitor.utils.Utils;
 import com.application.davidelm.filetreevisitor.views.BreadCrumbsView;
+import com.application.davidelm.filetreevisitor.views.BreadCrumbsView.OnPopBackStackInterface;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class DisplayNodeFragment extends Fragment implements OnNodeClickListener, OnNodeVisitCompleted, View.OnClickListener {
+public class DisplayNodeFragment extends Fragment implements OnNodeClickListener, OnNodeVisitCompleted, View.OnClickListener, OnPopBackStackInterface {
     private static final String TAG = "DisplayNodeFragment";
     private View mainDisplayLayoutId;
     private DisplayNodePresenter presenter;
@@ -85,11 +86,13 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
     @Override
     public void onNodeCLick(TreeNode node) {
         breadCrumbsView.addBreadCrumb(node.getValue().toString());
+
         //get support frag manager
         getActivity()
                 .getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainerId, Utils.buildFragment(node))
+                .addToBackStack("test")
                 .commit();
 
     }
@@ -104,5 +107,13 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
                 presenter.removeFirstNode();
                 break;
         }
+    }
+
+    @Override
+    public void onPopBackStack(int position) {
+        getActivity()
+                .getSupportFragmentManager()
+                .popBackStack();
+        breadCrumbsView.removeLatestBreadCrumb();
     }
 }

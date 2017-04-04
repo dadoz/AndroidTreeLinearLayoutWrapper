@@ -8,13 +8,16 @@ import android.widget.TextView;
 
 import com.application.davidelm.filetreevisitor.R;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class BreadCrumbsAdapter extends RecyclerView.Adapter<BreadCrumbsAdapter.ViewHolder> {
     private final ArrayList<String> items;
+    private WeakReference<OnSelectedItemClickListener> lst;
 
-    public BreadCrumbsAdapter(ArrayList<String> list) {
+    public BreadCrumbsAdapter(ArrayList<String> list, WeakReference<OnSelectedItemClickListener> lst) {
         items = list;
+        this.lst = lst;
     }
 
     @Override
@@ -25,7 +28,7 @@ public class BreadCrumbsAdapter extends RecyclerView.Adapter<BreadCrumbsAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.itemView.setOnClickListener(v -> Log.e("TAG", "hey" + items.get(position)));
+        holder.itemView.setOnClickListener(v -> lst.get().onItemClick(v, position));
         holder.labelTextView.setText(items.get(position));
     }
 
@@ -44,6 +47,22 @@ public class BreadCrumbsAdapter extends RecyclerView.Adapter<BreadCrumbsAdapter.
         notifyDataSetChanged();
     }
 
+    public void removeLastItem() {
+        items.remove(items.size() -1);
+        notifyDataSetChanged();
+    }
+
+    public void removeItemAfterPosition(int position) {
+        //TODO move to ID :O
+        ArrayList<String> removableList = new ArrayList<String>();
+        for (int i = position + 1; i < items.size(); i++) {
+            removableList.add(items.get(i));
+        }
+
+        items.removeAll(removableList);
+        notifyDataSetChanged();
+    }
+
     /**
      * view holder
      */
@@ -54,5 +73,9 @@ public class BreadCrumbsAdapter extends RecyclerView.Adapter<BreadCrumbsAdapter.
             super(itemView);
             labelTextView = (TextView) itemView.findViewById(R.id.breadCrumbsLabelTextId);
         }
+    }
+
+    public interface  OnSelectedItemClickListener{
+        void onItemClick(View view, int position);
     }
 }

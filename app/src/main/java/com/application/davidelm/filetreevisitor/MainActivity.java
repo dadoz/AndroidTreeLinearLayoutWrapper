@@ -1,12 +1,15 @@
 package com.application.davidelm.filetreevisitor;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 
 import com.application.davidelm.filetreevisitor.presenter.DisplayNodePresenter;
 import com.application.davidelm.filetreevisitor.treeFileView.TreeNode;
 import com.application.davidelm.filetreevisitor.utils.Utils;
+import com.application.davidelm.filetreevisitor.views.BreadCrumbsView;
 
 import java.lang.ref.WeakReference;
 
@@ -24,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onInitView() {
+        ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId)).setLst(new WeakReference<Activity>(this));
+
         TreeNode parentNode = presenter.getParentNode();
         //get support frag manager
         getSupportFragmentManager()
@@ -31,6 +36,13 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragmentContainerId, Utils.buildFragment(parentNode))
                 .commit();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId))
+                .removeLatestBreadCrumb();
     }
 
 }
