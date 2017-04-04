@@ -87,9 +87,9 @@ public class DisplayNodePresenter {
     /**
      * not optimized
      */
-    public void addNode() {
+    public void addNode(String nodeName) {
         if (currentParentNode != null) {
-            currentParentNode.addChild(new TreeNode("ChildNode" + currentParentNode.getChildren().size()));
+            currentParentNode.addChild(new TreeNode(nodeName));
             buildViewsByNodeChildren(currentParentNode);
         }
     }

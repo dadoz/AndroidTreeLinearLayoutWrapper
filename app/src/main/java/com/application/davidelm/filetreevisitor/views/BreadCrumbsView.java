@@ -98,10 +98,9 @@ public class BreadCrumbsView extends RecyclerView implements OnSelectedItemClick
         this.lst = lst;
     }
 
-    public interface OnSelectedViewNodeInterface {
-        void onSelectViewNode(int position);
-    }
-
+    /**
+     * on pop back stack cb
+     */
     public interface OnPopBackStackInterface {
         void onPopBackStack(int position);
     }

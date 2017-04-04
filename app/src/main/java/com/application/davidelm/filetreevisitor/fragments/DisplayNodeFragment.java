@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.application.davidelm.filetreevisitor.OnNodeClickListener;
 import com.application.davidelm.filetreevisitor.OnNodeVisitCompleted;
@@ -28,6 +29,7 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
     private BreadCrumbsView breadCrumbsView;
     private View removeNodeButton;
     private View addNodeButton;
+    private EditText nodeValueEditText;
 
     @Nullable
     @Override
@@ -45,6 +47,7 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
         breadCrumbsView = (BreadCrumbsView) getActivity().findViewById(R.id.breadCrumbsViewId);
         addNodeButton = view.findViewById(R.id.addNodeButtonId);
         removeNodeButton = view.findViewById(R.id.removeNodeButtonId);
+        nodeValueEditText = (EditText) view.findViewById(R.id.nodeValueEditTextId);
 
     }
 
@@ -101,7 +104,11 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.addNodeButtonId:
-                presenter.addNode();
+                if (nodeValueEditText.getText().toString().equals("")) {
+                    return;
+                }
+                presenter.addNode(nodeValueEditText.getText().toString());
+                nodeValueEditText.setText("");
                 break;
             case R.id.removeNodeButtonId:
                 presenter.removeFirstNode();
