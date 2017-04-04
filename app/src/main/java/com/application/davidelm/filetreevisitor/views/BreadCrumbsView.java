@@ -76,15 +76,17 @@ public class BreadCrumbsView extends RecyclerView implements OnSelectedItemClick
     @Override
     public void onItemClick(View view, int position) {
         popBackStackTillPosition(position);
-        //remove breadcrumbs later than position
-//        ((BreadCrumbsAdapter) getAdapter()).removeItemAfterPosition(position);
     }
 
+    /**
+     * pop stack
+     * @param position
+     */
     private void popBackStackTillPosition(int position) {
-        FragmentManager fragManager = ((AppCompatActivity) lst.get()).getSupportFragmentManager();
-        int cnt = fragManager.getBackStackEntryCount();
-        while (cnt > position) {
-            if (lst.get() != null) {
+        if (lst.get() != null) {
+            FragmentManager fragManager = ((AppCompatActivity) lst.get()).getSupportFragmentManager();
+            int cnt = fragManager.getBackStackEntryCount();
+            while (cnt > position) {
                 DisplayNodeFragment frag = (DisplayNodeFragment) fragManager.getFragments().get(cnt - 1);
                 frag.onPopBackStack(position);
                 cnt--;
