@@ -7,7 +7,7 @@ import com.application.davidelm.filetreevisitor.OnNodeClickListener;
 import com.application.davidelm.filetreevisitor.OnNodeVisitCompleted;
 import com.application.davidelm.filetreevisitor.R;
 import com.application.davidelm.filetreevisitor.treeFileView.ExpandTreeView;
-import com.application.davidelm.filetreevisitor.treeFileView.TreeNode;
+import com.application.davidelm.filetreevisitor.models.TreeNode;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -43,10 +43,10 @@ public class DisplayNodePresenter {
     private TreeNode initRoot() {
         //init tree node
         TreeNode root = TreeNode.root();
-        TreeNode parent = new TreeNode("MyParentNode");
-        TreeNode child0 = new TreeNode("ChildNode0");
-        TreeNode child1 = new TreeNode("ChildNode1");
-        child0.addChild(new TreeNode("Test Child of Child"));
+        TreeNode parent = new TreeNode("MyParentNode", true);
+        TreeNode child0 = new TreeNode("ChildNode0", true);
+        TreeNode child1 = new TreeNode("ChildNode1", true);
+        child0.addChild(new TreeNode("Test Child of Child", true));
         parent.addChildren(child0, child1);
         root.addChild(parent);
         return root;
@@ -87,9 +87,9 @@ public class DisplayNodePresenter {
     /**
      * not optimized
      */
-    public void addNode(String nodeName) {
+    public void addNode(String nodeName, boolean folder) {
         if (currentParentNode != null) {
-            currentParentNode.addChild(new TreeNode(nodeName));
+            currentParentNode.addChild(new TreeNode(nodeName, folder));
             buildViewsByNodeChildren(currentParentNode);
         }
     }

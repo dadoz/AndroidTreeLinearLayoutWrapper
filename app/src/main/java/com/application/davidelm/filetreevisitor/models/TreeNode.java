@@ -1,4 +1,4 @@
-package com.application.davidelm.filetreevisitor.treeFileView;
+package com.application.davidelm.filetreevisitor.models;
 
 
 
@@ -24,7 +24,8 @@ public class TreeNode implements Parcelable {
 //    private BaseNodeViewHolder mViewHolder;
     private TreeNodeClickListener mClickListener;
     private TreeNodeLongClickListener mLongClickListener;
-    private Object mValue;
+    private String mValue;
+    private boolean folder;
     private boolean mExpanded;
 
     protected TreeNode(Parcel in) {
@@ -35,6 +36,7 @@ public class TreeNode implements Parcelable {
             mSelected = in.readByte() != 0;
             mSelectable = in.readByte() != 0;
             children = in.createTypedArrayList(TreeNode.CREATOR);
+            folder = in.readByte() != 0;
             mExpanded = in.readByte() != 0;
         }
     }
@@ -61,9 +63,9 @@ public class TreeNode implements Parcelable {
         return ++mLastId;
     }
 
-    public TreeNode(Object value) {
-        children = new ArrayList<>();
-        mValue = value;
+    public TreeNode(String nodeName, boolean folder) {
+        this.mValue = nodeName;
+        this.folder = folder;
     }
 
     public TreeNode addChild(TreeNode childNode) {
@@ -244,7 +246,16 @@ public class TreeNode implements Parcelable {
         dest.writeByte((byte) (mSelected ? 1 : 0));
         dest.writeByte((byte) (mSelectable ? 1 : 0));
         dest.writeTypedList(children);
+        dest.writeByte((byte) (folder ? 1 : 0));
         dest.writeByte((byte) (mExpanded ? 1 : 0));
+    }
+
+    public boolean isFolder() {
+        return folder;
+    }
+
+    public void setFolder(boolean folder) {
+        this.folder = folder;
     }
 
     public interface TreeNodeClickListener {

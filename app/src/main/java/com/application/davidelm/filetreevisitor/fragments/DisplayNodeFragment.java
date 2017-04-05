@@ -1,20 +1,20 @@
 package com.application.davidelm.filetreevisitor.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.application.davidelm.filetreevisitor.OnNodeClickListener;
 import com.application.davidelm.filetreevisitor.OnNodeVisitCompleted;
 import com.application.davidelm.filetreevisitor.R;
 import com.application.davidelm.filetreevisitor.presenter.DisplayNodePresenter;
-import com.application.davidelm.filetreevisitor.treeFileView.TreeNode;
+import com.application.davidelm.filetreevisitor.models.TreeNode;
 import com.application.davidelm.filetreevisitor.utils.Utils;
 import com.application.davidelm.filetreevisitor.views.BreadCrumbsView;
 import com.application.davidelm.filetreevisitor.views.BreadCrumbsView.OnPopBackStackInterface;
@@ -22,7 +22,8 @@ import com.application.davidelm.filetreevisitor.views.BreadCrumbsView.OnPopBackS
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class DisplayNodeFragment extends Fragment implements OnNodeClickListener, OnNodeVisitCompleted, View.OnClickListener, OnPopBackStackInterface {
+public class DisplayNodeFragment extends Fragment implements OnNodeClickListener, OnNodeVisitCompleted,
+        View.OnClickListener, OnPopBackStackInterface {
     private static final String TAG = "DisplayNodeFragment";
     private View mainDisplayLayoutId;
     private DisplayNodePresenter presenter;
@@ -30,6 +31,7 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
     private View removeNodeButton;
     private View addNodeButton;
     private EditText nodeValueEditText;
+    private CheckBox nodeIsFolderCheckbox;
 
     @Nullable
     @Override
@@ -48,6 +50,7 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
         addNodeButton = view.findViewById(R.id.addNodeButtonId);
         removeNodeButton = view.findViewById(R.id.removeNodeButtonId);
         nodeValueEditText = (EditText) view.findViewById(R.id.nodeValueEditTextId);
+        nodeIsFolderCheckbox = (CheckBox) view.findViewById(R.id.nodeIsFolderCheckboxId);
 
     }
 
@@ -85,21 +88,6 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
         }
     }
 
-
-    @Override
-    public void onNodeCLick(TreeNode node) {
-        breadCrumbsView.addBreadCrumb(node.getValue().toString());
-
-        //get support frag manager
-        getActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainerId, Utils.buildFragment(node))
-                .addToBackStack("test")
-                .commit();
-
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -107,7 +95,7 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
                 if (nodeValueEditText.getText().toString().equals("")) {
                     return;
                 }
-                presenter.addNode(nodeValueEditText.getText().toString());
+                presenter.addNode(nodeValueEditText.getText().toString(), nodeIsFolderCheckbox.isChecked());
                 nodeValueEditText.setText("");
                 break;
             case R.id.removeNodeButtonId:
@@ -122,5 +110,24 @@ public class DisplayNodeFragment extends Fragment implements OnNodeClickListener
                 .getSupportFragmentManager()
                 .popBackStack();
         breadCrumbsView.removeLatestBreadCrumb();
+    }
+
+    @Override
+    public void onFolderNodeCLick(TreeNode node) {
+        breadCrumbsView.addBreadCrumb(node.getValue().toString());
+
+        //get support frag manager
+        getActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainerId, Utils.buildFragment(node))
+                .addToBackStack("test")
+                .commit();
+
+    }
+
+    @Override
+    public void onFileNodeCLick(TreeNode node) {
+        Snackbar.make(getView(), "file " + node.getValue() + " clicked", Snackbar.LENGTH_SHORT).show();
     }
 }

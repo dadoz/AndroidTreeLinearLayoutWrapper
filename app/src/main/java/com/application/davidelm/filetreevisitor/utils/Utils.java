@@ -3,7 +3,7 @@ package com.application.davidelm.filetreevisitor.utils;
 import android.os.Bundle;
 
 import com.application.davidelm.filetreevisitor.fragments.DisplayNodeFragment;
-import com.application.davidelm.filetreevisitor.treeFileView.TreeNode;
+import com.application.davidelm.filetreevisitor.models.TreeNode;
 
 
 public class Utils {
