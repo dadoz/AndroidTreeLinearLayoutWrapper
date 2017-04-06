@@ -16,7 +16,6 @@ import com.application.davidelm.filetreevisitor.R;
 import com.application.davidelm.filetreevisitor.adapter.BreadCrumbsAdapter;
 import com.application.davidelm.filetreevisitor.adapter.BreadCrumbsAdapter.OnSelectedItemClickListener;
 import com.application.davidelm.filetreevisitor.fragments.DisplayNodeFragment;
-import com.application.davidelm.filetreevisitor.presenter.DisplayNodePresenter;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

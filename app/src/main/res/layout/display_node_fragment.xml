@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
+        android:padding="16dp"
         android:id="@+id/buttonLayoutId"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -35,15 +36,11 @@
             android:textColor="@color/cardview_light_background"
             android:backgroundTint="@color/colorPrimary"/>
     </LinearLayout>
-    <ScrollView
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_below="@id/buttonLayoutId"
+        android:id="@+id/treeNodeRecyclerViewId"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:id="@+id/mainDisplayLayoutId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </ScrollView>
+        android:layout_height="match_parent"/>
 </RelativeLayout>
