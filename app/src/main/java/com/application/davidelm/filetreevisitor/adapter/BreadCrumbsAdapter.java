@@ -54,7 +54,7 @@ public class BreadCrumbsAdapter extends RecyclerView.Adapter<BreadCrumbsAdapter.
         }
     }
 
-    public void removeItemAfterPosition(int position) {
+    public void removeItemTillPosition(int position) {
         //TODO move to ID :O
         ArrayList<String> removableList = new ArrayList<String>();
         for (int i = position + 1; i < items.size(); i++) {
@@ -64,6 +64,7 @@ public class BreadCrumbsAdapter extends RecyclerView.Adapter<BreadCrumbsAdapter.
         items.removeAll(removableList);
         notifyDataSetChanged();
     }
+
 
     /**
      * view holder

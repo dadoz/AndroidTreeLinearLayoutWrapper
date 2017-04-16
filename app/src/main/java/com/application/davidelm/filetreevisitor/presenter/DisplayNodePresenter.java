@@ -30,12 +30,12 @@ public class DisplayNodePresenter {
     private TreeNode initRoot() {
         //init tree node
         TreeNode root = TreeNode.root();
-        TreeNode parent = new TreeNode("MyParentNode", true);
-        TreeNode child0 = new TreeNode("ChildNode0", true);
-        TreeNode child1 = new TreeNode("ChildNode1", true);
+        TreeNode parent = new TreeNode("MyParentNode", true, 0);
+        TreeNode child0 = new TreeNode("ChildNode0", true, 1);
+        TreeNode child1 = new TreeNode("ChildNode1", true, 1);
         child0.setParent(parent);
         child1.setParent(parent);
-        child0.addChild(new TreeNode("Test Child of Child", true));
+        child0.addChild(new TreeNode("Test Child of Child", true, 2));
         parent.addChildren(child0, child1);
         root.addChild(parent);
         return root;
@@ -82,7 +82,7 @@ public class DisplayNodePresenter {
      */
     public void addNode(String nodeName, boolean folder) {
         if (currentParentNode != null) {
-            currentParentNode.addChild(new TreeNode(nodeName, folder));
+            currentParentNode.addChild(new TreeNode(nodeName, folder, currentParentNode.getLevel() + 1));
             buildViewsByNodeChildren(currentParentNode);
         }
     }

@@ -6,8 +6,8 @@ import android.widget.RelativeLayout;
 
 import com.application.davidelm.filetreevisitor.R;
 
-public class MenuNodeView extends RelativeLayout {
-    public MenuNodeView(Context context) {
+public class MenuView extends RelativeLayout {
+    public MenuView(Context context) {
         super(context);
         init();
     }
@@ -16,17 +16,17 @@ public class MenuNodeView extends RelativeLayout {
         inflate(getContext(), R.layout.menu_node_layout, this);
     }
 
-    public MenuNodeView(Context context, AttributeSet attrs) {
+    public MenuView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public MenuNodeView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MenuView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public MenuNodeView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MenuView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }

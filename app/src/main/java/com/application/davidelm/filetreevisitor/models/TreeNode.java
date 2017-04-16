@@ -10,10 +10,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class TreeNode implements Parcelable {
+public class TreeNode {
     public static final String NODES_ID_SEPARATOR = ":";
     public static String TREE_NODE_BUNDLE = "TREE_NODE_BUNDLE";
     public static String TREE_NODE_PARCELABLE = "TREE_NODE_PARCELABLE";
+    private int level;
 
     private int mId;
     private int mLastId;
@@ -21,7 +22,6 @@ public class TreeNode implements Parcelable {
     private boolean mSelected;
     private boolean mSelectable = true;
     private List<TreeNode> children = new ArrayList<>();
-//    private BaseNodeViewHolder mViewHolder;
     private TreeNodeClickListener mClickListener;
     private TreeNodeLongClickListener mLongClickListener;
     private String mValue;
@@ -29,44 +29,20 @@ public class TreeNode implements Parcelable {
     private boolean mExpanded;
     private TreeNode parent;
 
-    protected TreeNode(Parcel in) {
-        if (in != null) {
-            mId = in.readInt();
-            mLastId = in.readInt();
-            mParent = in.readParcelable(TreeNode.class.getClassLoader());
-            mSelected = in.readByte() != 0;
-            mSelectable = in.readByte() != 0;
-            children = in.createTypedArrayList(TreeNode.CREATOR);
-            folder = in.readByte() != 0;
-            mExpanded = in.readByte() != 0;
-        }
+    public TreeNode(String nodeName, boolean folder, int level) {
+        this.mValue = nodeName;
+        this.folder = folder;
+        this.level = level;
     }
 
-    public static final Creator<TreeNode> CREATOR = new Creator<TreeNode>() {
-        @Override
-        public TreeNode createFromParcel(Parcel in) {
-            return new TreeNode(in);
-        }
-
-        @Override
-        public TreeNode[] newArray(int size) {
-            return new TreeNode[size];
-        }
-    };
-
     public static TreeNode root() {
-        TreeNode root = new TreeNode(null);
+        TreeNode root = new TreeNode(null, false, -1);
         root.setSelectable(false);
         return root;
     }
 
     private int generateId() {
         return ++mLastId;
-    }
-
-    public TreeNode(String nodeName, boolean folder) {
-        this.mValue = nodeName;
-        this.folder = folder;
     }
 
     public TreeNode addChild(TreeNode childNode) {
@@ -232,23 +208,6 @@ public class TreeNode implements Parcelable {
             root = root.mParent;
         }
         return root;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mId);
-        dest.writeInt(mLastId);
-        dest.writeParcelable(mParent, flags);
-        dest.writeByte((byte) (mSelected ? 1 : 0));
-        dest.writeByte((byte) (mSelectable ? 1 : 0));
-        dest.writeTypedList(children);
-        dest.writeByte((byte) (folder ? 1 : 0));
-        dest.writeByte((byte) (mExpanded ? 1 : 0));
     }
 
     public boolean isFolder() {

@@ -20,13 +20,12 @@ import com.application.davidelm.filetreevisitor.adapter.TreeNodeAdapter;
 import com.application.davidelm.filetreevisitor.decorator.SpaceItemDecorator;
 import com.application.davidelm.filetreevisitor.models.TreeNode;
 import com.application.davidelm.filetreevisitor.presenter.DisplayNodePresenter;
-import com.application.davidelm.filetreevisitor.views.BreadCrumbsView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DisplayNodeView extends FrameLayout implements OnNodeClickListener, OnNodeVisitCompleted {
+public class DisplayNodeView extends FrameLayout implements OnNodeClickListener, OnNodeVisitCompleted, BreadCrumbsView.OnPopBackStackInterface {
     private RecyclerView treeNodeRecyclerView;
     private String TAG = "TAG";
     private TreeNode currentNode;
@@ -121,12 +120,35 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
 
     public boolean onBackPressed() {
         boolean isRootNode = updateCurrentNode();
-        if (!isRootNode)
+        if (!isRootNode) {
+            //update breadCrumbs
+            breadCrumbsView.removeLatestBreadCrumb();
+
+            //update node viewsrr
             ((TreeNodeAdapter) treeNodeRecyclerView.getAdapter()).addItems(currentNode.getChildren());
+        }
         return !isRootNode;
     }
 
+    /**
+     *
+     * @param breadCrumbsView
+     */
     public void setBreadCrumbsView(BreadCrumbsView breadCrumbsView) {
         this.breadCrumbsView = breadCrumbsView;
+        breadCrumbsView.setLst(new WeakReference<>(this));
+    }
+
+    @Override
+    public void popBackStackTillPosition(int position) {
+        if (currentNode == null)
+            return;
+
+        while (currentNode.getLevel() - 1 != position) {
+            updateCurrentNode();
+        }
+
+        ((TreeNodeAdapter) treeNodeRecyclerView.getAdapter()).addItems(currentNode.getChildren());
+        treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
     }
 }

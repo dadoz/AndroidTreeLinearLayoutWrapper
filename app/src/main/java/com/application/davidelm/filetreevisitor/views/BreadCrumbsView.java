@@ -1,12 +1,8 @@
 package com.application.davidelm.filetreevisitor.views;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -22,7 +18,7 @@ import java.util.ArrayList;
 public class BreadCrumbsView extends RecyclerView implements OnSelectedItemClickListener {
 
 
-    private WeakReference<Activity> lst;
+    private WeakReference<OnPopBackStackInterface> lst;
 
     public BreadCrumbsView(Context context) {
         super(context);
@@ -73,26 +69,15 @@ public class BreadCrumbsView extends RecyclerView implements OnSelectedItemClick
 
     @Override
     public void onItemClick(View view, int position) {
-        popBackStackTillPosition(position);
+        //remove all item > position
+        ((BreadCrumbsAdapter) getAdapter()).removeItemTillPosition(position);
+
+        if (lst != null &&
+                lst.get() != null)
+            lst.get().popBackStackTillPosition(position);
     }
 
-    /**
-     * pop stack
-     * @param position
-     */
-    private void popBackStackTillPosition(int position) {
-        if (lst.get() != null) {
-            FragmentManager fragManager = ((AppCompatActivity) lst.get()).getSupportFragmentManager();
-            int cnt = fragManager.getBackStackEntryCount();
-//            while (cnt > position) {
-//                DisplayNodeFragment frag = (DisplayNodeFragment) fragManager.getFragments().get(cnt - 1);
-//                frag.onPopBackStack(position);
-//                cnt--;
-//            }
-        }
-    }
-
-    public void setLst(WeakReference<Activity> lst) {
+    public void setLst(WeakReference<OnPopBackStackInterface> lst) {
         this.lst = lst;
     }
 
@@ -100,7 +85,7 @@ public class BreadCrumbsView extends RecyclerView implements OnSelectedItemClick
      * on pop back stack cb
      */
     public interface OnPopBackStackInterface {
-        void onPopBackStack(int position);
+        void popBackStackTillPosition(int position);
     }
 
 }
