@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <com.application.davidelm.filetreevisitor.treeFileView.DisplayNodeView
+    <com.application.davidelm.filetreevisitor.views.DisplayNodeView
+        android:id="@+id/displayNodeViewId"
         android:layout_below="@id/breadCrumbsViewId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

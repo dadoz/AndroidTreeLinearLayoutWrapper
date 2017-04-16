@@ -27,6 +27,7 @@ public class TreeNode implements Parcelable {
     private String mValue;
     private boolean folder;
     private boolean mExpanded;
+    private TreeNode parent;
 
     protected TreeNode(Parcel in) {
         if (in != null) {
@@ -256,6 +257,10 @@ public class TreeNode implements Parcelable {
 
     public void setFolder(boolean folder) {
         this.folder = folder;
+    }
+
+    public void setParent(TreeNode parent) {
+        this.parent = parent;
     }
 
     public interface TreeNodeClickListener {

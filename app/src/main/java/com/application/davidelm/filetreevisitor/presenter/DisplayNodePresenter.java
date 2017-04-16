@@ -1,6 +1,5 @@
 package com.application.davidelm.filetreevisitor.presenter;
 
-import android.app.Activity;
 
 import com.application.davidelm.filetreevisitor.OnNodeVisitCompleted;
 import com.application.davidelm.filetreevisitor.models.TreeNode;
@@ -20,10 +19,9 @@ public class DisplayNodePresenter {
 
     }
 
-    public static DisplayNodePresenter getInstance(WeakReference<Activity> activity) {
+    public static DisplayNodePresenter getInstance() {
         return instance == null ? instance = new DisplayNodePresenter() : instance;
     }
-
 
     /**
      *
@@ -35,28 +33,41 @@ public class DisplayNodePresenter {
         TreeNode parent = new TreeNode("MyParentNode", true);
         TreeNode child0 = new TreeNode("ChildNode0", true);
         TreeNode child1 = new TreeNode("ChildNode1", true);
+        child0.setParent(parent);
+        child1.setParent(parent);
         child0.addChild(new TreeNode("Test Child of Child", true));
         parent.addChildren(child0, child1);
         root.addChild(parent);
         return root;
     }
 
-    public TreeNode getParentNode() {
+    public TreeNode getRootNode() {
         //set custom view
         return root.getChildren().get(0);
     }
 
-
+    /**
+     * build views
+     * @param parentNode
+     */
     public void buildViewsByNodeChildren(TreeNode parentNode) {
         this.currentParentNode = parentNode;
         if (onNodeVisitCompletedLst.get() != null)
+           onNodeVisitCompletedLst.get().setParentNode(parentNode);
            onNodeVisitCompletedLst.get().addNodes(parentNode.getChildren());
     }
 
+    /**
+     * init list
+     * @param lst2
+     */
     public void init(WeakReference<OnNodeVisitCompleted> lst2) {
         this.onNodeVisitCompletedLst = lst2;
     }
 
+    /**
+     * remove first node
+     */
     public void removeFirstNode() {
         if (currentParentNode != null &&
                 currentParentNode.getChildren().size() != 0) {
@@ -66,6 +77,7 @@ public class DisplayNodePresenter {
     }
 
     /**
+     * add node
      * not optimized
      */
     public void addNode(String nodeName, boolean folder) {

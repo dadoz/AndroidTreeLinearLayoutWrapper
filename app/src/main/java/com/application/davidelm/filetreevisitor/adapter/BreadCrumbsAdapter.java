@@ -48,8 +48,10 @@ public class BreadCrumbsAdapter extends RecyclerView.Adapter<BreadCrumbsAdapter.
     }
 
     public void removeLastItem() {
-        items.remove(items.size() -1);
-        notifyDataSetChanged();
+        if (items.size() > 1) {
+            items.remove(items.size() - 1);
+            notifyDataSetChanged();
+        }
     }
 
     public void removeItemAfterPosition(int position) {

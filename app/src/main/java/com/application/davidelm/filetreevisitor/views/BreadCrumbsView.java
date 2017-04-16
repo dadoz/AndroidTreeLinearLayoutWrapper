@@ -15,7 +15,6 @@ import android.view.View;
 import com.application.davidelm.filetreevisitor.R;
 import com.application.davidelm.filetreevisitor.adapter.BreadCrumbsAdapter;
 import com.application.davidelm.filetreevisitor.adapter.BreadCrumbsAdapter.OnSelectedItemClickListener;
-import com.application.davidelm.filetreevisitor.fragments.DisplayNodeFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -85,11 +84,11 @@ public class BreadCrumbsView extends RecyclerView implements OnSelectedItemClick
         if (lst.get() != null) {
             FragmentManager fragManager = ((AppCompatActivity) lst.get()).getSupportFragmentManager();
             int cnt = fragManager.getBackStackEntryCount();
-            while (cnt > position) {
-                DisplayNodeFragment frag = (DisplayNodeFragment) fragManager.getFragments().get(cnt - 1);
-                frag.onPopBackStack(position);
-                cnt--;
-            }
+//            while (cnt > position) {
+//                DisplayNodeFragment frag = (DisplayNodeFragment) fragManager.getFragments().get(cnt - 1);
+//                frag.onPopBackStack(position);
+//                cnt--;
+//            }
         }
     }
 

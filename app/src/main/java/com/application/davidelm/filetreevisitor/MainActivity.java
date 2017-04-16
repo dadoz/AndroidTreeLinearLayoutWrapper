@@ -6,9 +6,8 @@ import android.os.Bundle;
 
 
 import com.application.davidelm.filetreevisitor.presenter.DisplayNodePresenter;
-import com.application.davidelm.filetreevisitor.models.TreeNode;
-import com.application.davidelm.filetreevisitor.utils.Utils;
 import com.application.davidelm.filetreevisitor.views.BreadCrumbsView;
+import com.application.davidelm.filetreevisitor.views.DisplayNodeView;
 
 import java.lang.ref.WeakReference;
 
@@ -21,27 +20,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        presenter = DisplayNodePresenter.getInstance(new WeakReference<>(this));
         onInitView();
     }
 
     private void onInitView() {
-        ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId)).setLst(new WeakReference<Activity>(this));
-
-        TreeNode parentNode = presenter.getParentNode();
-        //get support frag manager
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainerId, Utils.buildFragment(parentNode))
-                .commit();
-
+        BreadCrumbsView breadCrumbsView = ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId));
+        ((DisplayNodeView) findViewById(R.id.displayNodeViewId)).setBreadCrumbsView(breadCrumbsView);
+//        ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId))
+//                .setLst(new WeakReference<>(this));
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId))
-                .removeLatestBreadCrumb();
+//        super.onBackPressed();
+        //handle this
+//        ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId))
+//                .removeLatestBreadCrumb();
+
+        boolean isHandled = ((DisplayNodeView) findViewById(R.id.displayNodeViewId))
+                .onBackPressed();
+        if (!isHandled)
+            super.onBackPressed();
     }
 
 }
