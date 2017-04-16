@@ -1,26 +1,25 @@
-package com.application.davidelm.filetreevisitor.presenter;
+package com.application.davidelm.filetreevisitor.models;
 
 
 import com.application.davidelm.filetreevisitor.OnNodeVisitCompleted;
-import com.application.davidelm.filetreevisitor.models.TreeNode;
 
 import java.lang.ref.WeakReference;
 
-public class DisplayNodePresenter {
-    private static final String TAG = "DisplayNodePresenter";
+public class DisplayNodeListModel {
+    private static final String TAG = "DisplayNodeListModel";
     private final TreeNode root;
-    private static DisplayNodePresenter instance;
+    private static DisplayNodeListModel instance;
     private WeakReference<OnNodeVisitCompleted> onNodeVisitCompletedLst;
     private TreeNode currentParentNode;
 
-    private DisplayNodePresenter() {
+    private DisplayNodeListModel() {
         //treeview
         root = initRoot();
 
     }
 
-    public static DisplayNodePresenter getInstance() {
-        return instance == null ? instance = new DisplayNodePresenter() : instance;
+    public static DisplayNodeListModel getInstance() {
+        return instance == null ? instance = new DisplayNodeListModel() : instance;
     }
 
     /**
@@ -85,5 +84,9 @@ public class DisplayNodePresenter {
             currentParentNode.addChild(new TreeNode(nodeName, folder, currentParentNode.getLevel() + 1));
             buildViewsByNodeChildren(currentParentNode);
         }
+    }
+
+    public void setCurrentNode(TreeNode currentNode) {
+        this.currentParentNode = currentNode;
     }
 }

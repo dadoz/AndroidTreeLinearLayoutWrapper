@@ -1,20 +1,19 @@
 package com.application.davidelm.filetreevisitor;
 
-import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 
-import com.application.davidelm.filetreevisitor.presenter.DisplayNodePresenter;
 import com.application.davidelm.filetreevisitor.views.BreadCrumbsView;
 import com.application.davidelm.filetreevisitor.views.DisplayNodeView;
 
-import java.lang.ref.WeakReference;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "MainActivity";
-    private DisplayNodePresenter presenter;
+    private DisplayNodeView displayNodeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,23 +23,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onInitView() {
-        BreadCrumbsView breadCrumbsView = ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId));
-        ((DisplayNodeView) findViewById(R.id.displayNodeViewId)).setBreadCrumbsView(breadCrumbsView);
-//        ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId))
-//                .setLst(new WeakReference<>(this));
+        injectViews();
+
+        findViewById(R.id.addFolderButtonId).setOnClickListener(this);
+        findViewById(R.id.addFileButtonId).setOnClickListener(this);
     }
 
+    /**
+     * addd to doc
+     */
+    private void injectViews() {
+        BreadCrumbsView breadCrumbsView = ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId));
+        displayNodeView = ((DisplayNodeView) findViewById(R.id.displayNodeViewId));
+        displayNodeView.setBreadCrumbsView(breadCrumbsView);
+    }
+
+    /**
+     * add to doc
+     */
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
-        //handle this
-//        ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId))
-//                .removeLatestBreadCrumb();
-
-        boolean isHandled = ((DisplayNodeView) findViewById(R.id.displayNodeViewId))
-                .onBackPressed();
-        if (!isHandled)
+        if (!((DisplayNodeView) findViewById(R.id.displayNodeViewId))
+                .onBackPressed())
             super.onBackPressed();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.addFolderButtonId:
+                displayNodeView.addFolder(((EditText) findViewById(R.id.nodeValueEditTextId)).getText().toString());
+                break;
+            case R.id.addFileButtonId:
+                displayNodeView.addFile(((EditText) findViewById(R.id.nodeValueEditTextId)).getText().toString());
+                break;
+        }
+    }
 }

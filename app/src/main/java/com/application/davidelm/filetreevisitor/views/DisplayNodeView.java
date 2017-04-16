@@ -19,7 +19,7 @@ import com.application.davidelm.filetreevisitor.R;
 import com.application.davidelm.filetreevisitor.adapter.TreeNodeAdapter;
 import com.application.davidelm.filetreevisitor.decorator.SpaceItemDecorator;
 import com.application.davidelm.filetreevisitor.models.TreeNode;
-import com.application.davidelm.filetreevisitor.presenter.DisplayNodePresenter;
+import com.application.davidelm.filetreevisitor.models.DisplayNodeListModel;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -31,6 +31,7 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
     private TreeNode currentNode;
     private TreeNode rootNode;
     private BreadCrumbsView breadCrumbsView;
+    private DisplayNodeListModel displayNodeListModel;
 
     public DisplayNodeView(@NonNull Context context) {
         super(context);
@@ -55,11 +56,11 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
     public void initView() {
         inflate(getContext(), R.layout.display_node_layout, this);
         treeNodeRecyclerView = (RecyclerView) findViewById(R.id.treeNodeRecyclerViewId);
-        DisplayNodePresenter presenter = DisplayNodePresenter.getInstance();
+        displayNodeListModel = DisplayNodeListModel.getInstance();
 
-        TreeNode parentNode = presenter.getRootNode();
-        presenter.init(new WeakReference<>(this));
-        presenter.buildViewsByNodeChildren(parentNode);
+        TreeNode parentNode = displayNodeListModel.getRootNode();
+        displayNodeListModel.init(new WeakReference<>(this));
+        displayNodeListModel.buildViewsByNodeChildren(parentNode);
     }
 
     /**
@@ -81,7 +82,7 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
     @Override
     public void setParentNode(TreeNode parentNode) {
         Log.e(TAG, parentNode.getValue().toString());
-        rootNode = parentNode;
+        rootNode = currentNode = parentNode;
     }
 
     @Override
@@ -99,18 +100,18 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
      *
      * @param node
      */
-    private void updateCurrentNode(TreeNode node) {
-        currentNode = node;
-    }
-    /**
-     *
+    private boolean updateCurrentNode(TreeNode node) {
+        if (node != null)
+            currentNode = node;
+        else
+            currentNode = currentNode != null && currentNode.getParent() != null ?
+                    currentNode.getParent() : rootNode;
 
-     */
-    private boolean updateCurrentNode() {
-        currentNode = currentNode != null && currentNode.getParent() != null ?
-                currentNode.getParent() : rootNode;
+        //update current node on displayNodeListModel
+        displayNodeListModel.setCurrentNode(currentNode);
+
+        //return current node is parent
         return currentNode.getParent() == null;
-
     }
 
     @Override
@@ -119,7 +120,7 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
     }
 
     public boolean onBackPressed() {
-        boolean isRootNode = updateCurrentNode();
+        boolean isRootNode = updateCurrentNode(null);
         if (!isRootNode) {
             //update breadCrumbs
             breadCrumbsView.removeLatestBreadCrumb();
@@ -145,10 +146,20 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
             return;
 
         while (currentNode.getLevel() - 1 != position) {
-            updateCurrentNode();
+            updateCurrentNode(null);
         }
 
         ((TreeNodeAdapter) treeNodeRecyclerView.getAdapter()).addItems(currentNode.getChildren());
+        treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    public void addFolder(String name) {
+        displayNodeListModel.addNode(name, true);
+        treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    public void addFile(String name) {
+        displayNodeListModel.addNode(name, false);
         treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
     }
 }
