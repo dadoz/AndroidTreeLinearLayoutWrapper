@@ -4,8 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
-
 
 import com.application.davidelm.filetreevisitor.views.BreadCrumbsView;
 import com.application.davidelm.filetreevisitor.views.DisplayNodeView;

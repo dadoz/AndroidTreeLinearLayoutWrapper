@@ -1,24 +1,22 @@
 package com.application.davidelm.filetreevisitor.models;
 
 
-
-import android.os.Parcel;
-import android.os.Parcelable;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
-public class TreeNode {
+public class TreeNode implements Serializable {
     public static final String NODES_ID_SEPARATOR = ":";
-    public static String TREE_NODE_BUNDLE = "TREE_NODE_BUNDLE";
-    public static String TREE_NODE_PARCELABLE = "TREE_NODE_PARCELABLE";
+    public static final String TREE_NODE_BUNDLE = "TREE_NODE_BUNDLE";
+    public static final String TREE_NODE_PARCELABLE = "TREE_NODE_PARCELABLE";
     private int level;
 
     private int mId;
     private int mLastId;
-    private TreeNode mParent;
+    private transient TreeNode mParent;
     private boolean mSelected;
     private boolean mSelectable = true;
     private List<TreeNode> children = new ArrayList<>();
@@ -27,7 +25,6 @@ public class TreeNode {
     private String mValue;
     private boolean folder;
     private boolean mExpanded;
-    private TreeNode parent;
 
     public TreeNode(String nodeName, boolean folder, int level) {
         this.mValue = nodeName;
@@ -160,13 +157,6 @@ public class TreeNode {
         return false;
     }
 
-//    public TreeNode setViewHolder(BaseNodeViewHolder viewHolder) {
-//        mViewHolder = viewHolder;
-//        if (viewHolder != null) {
-//            viewHolder.mNode = this;
-//        }
-//        return this;
-//    }
 
     public TreeNode setClickListener(TreeNodeClickListener listener) {
         mClickListener = listener;
@@ -186,9 +176,6 @@ public class TreeNode {
         return mLongClickListener;
     }
 
-//    public BaseNodeViewHolder getViewHolder() {
-//        return mViewHolder;
-//    }
 
     public boolean isFirstChild() {
         if (!isRoot()) {
@@ -218,10 +205,6 @@ public class TreeNode {
         this.folder = folder;
     }
 
-    public void setParent(TreeNode parent) {
-        this.parent = parent;
-    }
-
     public interface TreeNodeClickListener {
         void onClick(TreeNode node, Object value);
     }
@@ -230,66 +213,4 @@ public class TreeNode {
         boolean onLongClick(TreeNode node, Object value);
     }
 
-//    public static abstract class BaseNodeViewHolder<E> {
-//        protected AndroidTreeView tView;
-//        protected TreeNode mNode;
-//        private View mView;
-//        protected int containerStyle;
-//        protected Context context;
-//
-//        public BaseNodeViewHolder(Context context) {
-//            this.context = context;
-//        }
-//
-//        public View getView() {
-//            if (mView != null) {
-//                return mView;
-//            }
-//            final View nodeView = getNodeView();
-//            final TreeNodeWrapperView nodeWrapperView = new TreeNodeWrapperView(nodeView.getContext(), getContainerStyle());
-//            nodeWrapperView.insertNodeView(nodeView);
-//            mView = nodeWrapperView;
-//
-//            return mView;
-//        }
-//
-//        public void setTreeViev(AndroidTreeView treeViev) {
-//            this.tView = treeViev;
-//        }
-//
-//        public AndroidTreeView getTreeView() {
-//            return tView;
-//        }
-//
-//        public void setContainerStyle(int style) {
-//            containerStyle = style;
-//        }
-//
-//        public View getNodeView() {
-//            return createNodeView(mNode, (E) mNode.getValue());
-//        }
-//
-//        public ViewGroup getNodeItemsView() {
-//            return (ViewGroup) getView().findViewById(R.id.node_items);
-//        }
-//
-//        public boolean isInitialized() {
-//            return mView != null;
-//        }
-//
-//        public int getContainerStyle() {
-//            return containerStyle;
-//        }
-//
-//
-//        public abstract View createNodeView(TreeNode node, E value);
-//
-//        public void toggle(boolean active) {
-//            // empty
-//        }
-//
-//        public void toggleSelectionMode(boolean editModeEnabled) {
-//            // empty
-//        }
-//    }
 }
