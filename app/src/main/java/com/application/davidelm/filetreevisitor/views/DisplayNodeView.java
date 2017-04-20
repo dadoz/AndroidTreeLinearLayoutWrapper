@@ -101,17 +101,16 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
      * @param node
      */
     private boolean updateCurrentNode(TreeNode node) {
-        if (node != null)
-            currentNode = node;
-        else
-            currentNode = currentNode != null && currentNode.getParent() != null ?
-                    currentNode.getParent() : rootNode;
+        currentNode = (node != null) ? node :
+                (currentNode != null && !currentNode.isRoot()) ? currentNode.getParent() : rootNode;
+
+        Log.e(TAG, currentNode.getValue().toString());
 
         //update current node on displayNodeListModel
         displayNodeListModel.setCurrentNode(currentNode);
 
         //return current node is parent
-        return currentNode.getParent() == null;
+        return currentNode.isRoot();
     }
 
     @Override

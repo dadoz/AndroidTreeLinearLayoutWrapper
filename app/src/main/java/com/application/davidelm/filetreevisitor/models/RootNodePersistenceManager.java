@@ -6,12 +6,14 @@ import android.util.Log;
 
 import com.application.davidelm.filetreevisitor.OnNodeVisitCompleted;
 import com.application.davidelm.filetreevisitor.helper.SharedPrefHelper;
+import com.application.davidelm.filetreevisitor.utils.Utils;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 public class RootNodePersistenceManager {
-    private static final String TAG = "RootNodePersistenceManager";
+    private static final String TAG = "RootNodePersistence";
     private static RootNodePersistenceManager instance;
     private final TreeNode root;
     private final SharedPrefHelper sharedPref;
@@ -20,7 +22,15 @@ public class RootNodePersistenceManager {
 
     private RootNodePersistenceManager(WeakReference<Context> context) {
         this.sharedPref = new SharedPrefHelper(context);
-        root = currentTreeNode = readByLocalStorage();
+
+        //init root
+        TreeNode parsedNode = readByLocalStorage();
+        root = currentTreeNode  = parsedNode != null ? parsedNode : initRootNode();
+        saveOnLocalStorage();
+    }
+
+    private TreeNode initRootNode() {
+        return new TreeNode("ROOT", false, TreeNode.ROOT_LEVEL);
     }
 
     /**
@@ -61,7 +71,7 @@ public class RootNodePersistenceManager {
     }
 
     /**
-     * 
+     *
      * @param currentTreeNode
      */
     public void setCurrentNode(TreeNode currentTreeNode) {
@@ -69,13 +79,38 @@ public class RootNodePersistenceManager {
     }
 
     public void saveOnLocalStorage() {
+        Log.e(TAG, new Gson().toJson(root));
         sharedPref.setValue(SharedPrefHelper.SharedPrefKeysEnum.TREE_NODE,
                 new Gson().toJson(root));
     }
 
     public TreeNode readByLocalStorage() {
-        currentTreeNode = new Gson().fromJson(sharedPref.getValue(SharedPrefHelper
-                .SharedPrefKeysEnum.TREE_NODE, "{}").toString(), TreeNode.class);
+        try {
+            Log.e(TAG, sharedPref.getValue(SharedPrefHelper
+                    .SharedPrefKeysEnum.TREE_NODE, null) + "---------------");
+            currentTreeNode = new Gson().fromJson(sharedPref.getValue(SharedPrefHelper
+                    .SharedPrefKeysEnum.TREE_NODE, null).toString(), TreeNode.class);
+            updateParentOnCurrentNode(currentTreeNode, TreeNode.ROOT_LEVEL);
+        } catch (Exception e) {
+            e.printStackTrace();
+            currentTreeNode = null;
+        }
         return currentTreeNode;
+    }
+
+    /**
+     * recursion to handle se parent on each node
+     * @param currentTreeNode
+     * @param level
+     */
+    private void updateParentOnCurrentNode(TreeNode currentTreeNode, int level) {
+        Log.e(TAG, "set parent on node + " + level);
+        List<TreeNode> list;
+        if ((list = currentTreeNode.getChildren()) != null) {
+            for (TreeNode item : list) {
+                item.setParent(currentTreeNode);
+                updateParentOnCurrentNode(item, level++);
+            }
+        }
     }
 }

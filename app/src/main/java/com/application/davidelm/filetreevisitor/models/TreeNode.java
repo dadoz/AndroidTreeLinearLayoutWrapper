@@ -12,6 +12,7 @@ public class TreeNode implements Serializable {
     public static final String NODES_ID_SEPARATOR = ":";
     public static final String TREE_NODE_BUNDLE = "TREE_NODE_BUNDLE";
     public static final String TREE_NODE_PARCELABLE = "TREE_NODE_PARCELABLE";
+    public static final int ROOT_LEVEL = -1;
     private int level;
 
     private int mId;
@@ -122,19 +123,6 @@ public class TreeNode implements Serializable {
         return mSelectable;
     }
 
-    public String getPath() {
-        final StringBuilder path = new StringBuilder();
-        TreeNode node = this;
-        while (node.mParent != null) {
-            path.append(node.getId());
-            node = node.mParent;
-            if (node.mParent != null) {
-                path.append(NODES_ID_SEPARATOR);
-            }
-        }
-        return path.toString();
-    }
-
 
     public int getLevel() {
         int level = 0;
@@ -186,7 +174,7 @@ public class TreeNode implements Serializable {
     }
 
     public boolean isRoot() {
-        return mParent == null;
+        return mParent == null && level == ROOT_LEVEL;
     }
 
     public TreeNode getRoot() {
@@ -203,6 +191,10 @@ public class TreeNode implements Serializable {
 
     public void setFolder(boolean folder) {
         this.folder = folder;
+    }
+
+    public void setParent(TreeNode parent) {
+        this.mParent = parent;
     }
 
     public interface TreeNodeClickListener {
