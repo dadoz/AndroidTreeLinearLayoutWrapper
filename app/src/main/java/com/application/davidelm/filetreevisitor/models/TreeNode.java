@@ -1,6 +1,8 @@
 package com.application.davidelm.filetreevisitor.models;
 
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +15,7 @@ public class TreeNode implements Serializable {
     public static final String TREE_NODE_BUNDLE = "TREE_NODE_BUNDLE";
     public static final String TREE_NODE_PARCELABLE = "TREE_NODE_PARCELABLE";
     public static final int ROOT_LEVEL = -1;
+    private static final String TAG = "TreeNodeTAG";
     private int level;
 
     private int mId;
@@ -174,6 +177,7 @@ public class TreeNode implements Serializable {
     }
 
     public boolean isRoot() {
+        Log.e(TAG, "check parent node value" + mValue);
         return mParent == null && level == ROOT_LEVEL;
     }
 
@@ -195,6 +199,10 @@ public class TreeNode implements Serializable {
 
     public void setParent(TreeNode parent) {
         this.mParent = parent;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public interface TreeNodeClickListener {

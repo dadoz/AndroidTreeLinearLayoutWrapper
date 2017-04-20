@@ -101,16 +101,18 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
      * @param node
      */
     private boolean updateCurrentNode(TreeNode node) {
-        currentNode = (node != null) ? node :
-                (currentNode != null && !currentNode.isRoot()) ? currentNode.getParent() : rootNode;
+        //check if isRootNode
+        boolean isRootNode = currentNode.isRoot();
 
-        Log.e(TAG, currentNode.getValue().toString());
+        //set current node
+        currentNode = (node != null) ? node :
+                (currentNode != null && !isRootNode) ? currentNode.getParent() : rootNode;
 
         //update current node on displayNodeListModel
         displayNodeListModel.setCurrentNode(currentNode);
 
         //return current node is parent
-        return currentNode.isRoot();
+        return isRootNode;
     }
 
     @Override
@@ -141,11 +143,13 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
 
     @Override
     public void popBackStackTillPosition(int position) {
+        Log.e(TAG, "current node " + currentNode.getLevel());
         if (currentNode == null)
             return;
 
-        while (currentNode.getLevel() - 1 != position && currentNode.getLevel() > 0) {
-            updateCurrentNode(null);
+        while (currentNode.getLevel() != position &&
+                currentNode.getLevel() > 0) {
+            updateCurrentNode(currentNode.getParent());
         }
 
         ((TreeNodeAdapter) treeNodeRecyclerView.getAdapter()).addItems(currentNode.getChildren());

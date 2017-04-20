@@ -15,20 +15,32 @@ import java.util.List;
 public class RootNodePersistenceManager {
     private static final String TAG = "RootNodePersistence";
     private static RootNodePersistenceManager instance;
-    private final TreeNode root;
+    private TreeNode root;
     private final SharedPrefHelper sharedPref;
     private WeakReference<OnNodeVisitCompleted> onNodeVisitCompletedLst;
     private TreeNode currentTreeNode; //TODO make it persistent
 
+    /**
+     * build manager
+     * @param context
+     */
     private RootNodePersistenceManager(WeakReference<Context> context) {
         this.sharedPref = new SharedPrefHelper(context);
 
-        //init root
-        TreeNode parsedNode = readByLocalStorage();
-        root = currentTreeNode  = parsedNode != null ? parsedNode : initRootNode();
-        saveOnLocalStorage();
+        //check parsed node
+        if ((root = readByLocalStorage()) == null) {
+            root = initRootNode();
+            writeOnLocalStorage();
+        }
+
+        //init current node
+        currentTreeNode = root;
     }
 
+    /**
+     * init root node
+     * @return
+     */
     private TreeNode initRootNode() {
         return new TreeNode("ROOT", false, TreeNode.ROOT_LEVEL);
     }
@@ -58,13 +70,16 @@ public class RootNodePersistenceManager {
             currentTreeNode.addChild(new TreeNode(nodeName, folder, currentTreeNode.getLevel() + 1));
 
             //save on storage
-            saveOnLocalStorage();
+            writeOnLocalStorage();
 
             //update view
             buildViewsByNodeChildren();
         }
     }
 
+    /**
+     * build view by node children
+     */
     public void buildViewsByNodeChildren() {
         onNodeVisitCompletedLst.get().setParentNode(currentTreeNode);
         onNodeVisitCompletedLst.get().addNodes(currentTreeNode.getChildren());
@@ -78,16 +93,20 @@ public class RootNodePersistenceManager {
         this.currentTreeNode = currentTreeNode;
     }
 
-    public void saveOnLocalStorage() {
+    /**
+     * saving on local storage
+     */
+    public void writeOnLocalStorage() {
         Log.e(TAG, new Gson().toJson(root));
         sharedPref.setValue(SharedPrefHelper.SharedPrefKeysEnum.TREE_NODE,
                 new Gson().toJson(root));
     }
 
+    /**
+     * reading on local storage
+     */
     public TreeNode readByLocalStorage() {
         try {
-            Log.e(TAG, sharedPref.getValue(SharedPrefHelper
-                    .SharedPrefKeysEnum.TREE_NODE, null) + "---------------");
             currentTreeNode = new Gson().fromJson(sharedPref.getValue(SharedPrefHelper
                     .SharedPrefKeysEnum.TREE_NODE, null).toString(), TreeNode.class);
             updateParentOnCurrentNode(currentTreeNode, TreeNode.ROOT_LEVEL);
@@ -104,12 +123,13 @@ public class RootNodePersistenceManager {
      * @param level
      */
     private void updateParentOnCurrentNode(TreeNode currentTreeNode, int level) {
+        level += 1;
         Log.e(TAG, "set parent on node + " + level);
         List<TreeNode> list;
         if ((list = currentTreeNode.getChildren()) != null) {
             for (TreeNode item : list) {
                 item.setParent(currentTreeNode);
-                updateParentOnCurrentNode(item, level++);
+                updateParentOnCurrentNode(item, level);
             }
         }
     }
