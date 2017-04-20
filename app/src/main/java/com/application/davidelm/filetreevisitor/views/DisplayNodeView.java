@@ -73,6 +73,10 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
 
     }
 
+    /**
+     *
+     * @param list
+     */
     public void addNodes(List<TreeNode> list) {
         if (treeNodeRecyclerView.getAdapter() == null)
             initRecyclerView();
@@ -156,13 +160,38 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
         treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
+    /**
+     *
+     * @param name
+     */
     public void addFolder(String name) {
         displayNodeListModel.addNode(name, true);
         treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
+    /**
+     *
+     * @param name
+     */
     public void addFile(String name) {
         displayNodeListModel.addNode(name, false);
         treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    /**
+     *
+     * @param name
+     */
+    public void removeFolder(String name) {
+        displayNodeListModel.removeNode(currentNode.getChildPosByName(name));
+        treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    /**
+     *
+     * @param position
+     */
+    public void removeFolder(int position) {
+        displayNodeListModel.removeNode(currentNode.getChildren().get(position));
     }
 }

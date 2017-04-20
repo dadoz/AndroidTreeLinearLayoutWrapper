@@ -65,6 +65,13 @@ public class RootNodePersistenceManager {
      * add node
      * not optimized
      */
+    public void removeNode(TreeNode node) {
+        currentTreeNode.deleteChild(node);
+    }
+    /**
+     * add node
+     * not optimized
+     */
     public void addNode(String nodeName, boolean folder) {
         if (currentTreeNode != null) {
             currentTreeNode.addChild(new TreeNode(nodeName, folder, currentTreeNode.getLevel() + 1));

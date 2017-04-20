@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 public class TreeNode implements Serializable {
@@ -203,6 +202,15 @@ public class TreeNode implements Serializable {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public TreeNode getChildPosByName(String name) {
+        for (TreeNode item : children) {
+            if (item.getValue().equals(name)) {
+                return item;
+            }
+        }
+        return null;
     }
 
     public interface TreeNodeClickListener {
