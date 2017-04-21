@@ -2,6 +2,7 @@ package com.application.davidelm.filetreevisitor.adapter;
 
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,6 +19,7 @@ import java.util.List;
 public class TreeNodeAdapter extends RecyclerView.Adapter<TreeNodeAdapter.ViewHolder> {
     private final List<TreeNode> items;
     private WeakReference<OnNodeClickListener> lst;
+    private String TAG = "TreeNodeAdapter";
 
     public TreeNodeAdapter(List<TreeNode> list, WeakReference<OnNodeClickListener> lst) {
         items = list;
@@ -55,19 +57,16 @@ public class TreeNodeAdapter extends RecyclerView.Adapter<TreeNodeAdapter.ViewHo
         notifyDataSetChanged();
     }
 
-    public void removeItem(String breadCrumb) {
-        items.remove(breadCrumb);
-        notifyDataSetChanged();
-    }
-
-    public void removeLastItem() {
-        items.remove(items.size() -1);
-        notifyDataSetChanged();
-    }
-
     public void addItems(List<TreeNode> list) {
         items.clear();
         items.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void removeItem(TreeNode childNode) {
+        int position = items.indexOf(childNode);
+        Log.e(TAG, "DEL " + items.size() + " - " + childNode.getValue().toString() + " - " + position);
+        items.remove(position);
         notifyDataSetChanged();
     }
 

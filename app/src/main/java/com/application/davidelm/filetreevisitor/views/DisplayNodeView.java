@@ -25,7 +25,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DisplayNodeView extends FrameLayout implements OnNodeClickListener, OnNodeVisitCompleted, BreadCrumbsView.OnPopBackStackInterface {
+public class DisplayNodeView extends FrameLayout implements OnNodeClickListener, OnNodeVisitCompleted,
+        BreadCrumbsView.OnPopBackStackInterface {
     private RecyclerView treeNodeRecyclerView;
     private String TAG = "TAG";
     private TreeNode currentNode;
@@ -60,7 +61,6 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
 
         //displayNodeListModel.getRootNode();
         displayNodeListModel.init(new WeakReference<>(this));
-        displayNodeListModel.buildViewsByNodeChildren();
     }
 
     /**
@@ -87,6 +87,11 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
     public void setParentNode(TreeNode parentNode) {
         Log.e(TAG, parentNode.getValue() != null ? parentNode.getValue().toString() : "root");
         rootNode = currentNode = parentNode;
+    }
+
+    @Override
+    public void removeNode(TreeNode childNode) {
+        ((TreeNodeAdapter) treeNodeRecyclerView.getAdapter()).removeItem(childNode);
     }
 
     @Override
@@ -166,7 +171,6 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
      */
     public void addFolder(String name) {
         displayNodeListModel.addNode(name, true);
-        treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
     /**
@@ -175,7 +179,6 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
      */
     public void addFile(String name) {
         displayNodeListModel.addNode(name, false);
-        treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
     /**
@@ -183,8 +186,7 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
      * @param name
      */
     public void removeFolder(String name) {
-        displayNodeListModel.removeNode(currentNode.getChildPosByName(name));
-        treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
+        displayNodeListModel.removeNode(currentNode.getChildByName(name));
     }
 
     /**

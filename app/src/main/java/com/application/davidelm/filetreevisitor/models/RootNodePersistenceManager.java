@@ -51,6 +51,7 @@ public class RootNodePersistenceManager {
      */
     public void init(WeakReference<OnNodeVisitCompleted> lst2) {
         this.onNodeVisitCompletedLst = lst2;
+        addNodeUpdateView();
     }
 
     /**
@@ -66,7 +67,11 @@ public class RootNodePersistenceManager {
      * not optimized
      */
     public void removeNode(TreeNode node) {
-        currentTreeNode.deleteChild(node);
+        if (currentTreeNode != null) {
+            currentTreeNode.deleteChild(node);
+
+            removeNodeUpdateView(node);
+        }
     }
     /**
      * add node
@@ -80,16 +85,27 @@ public class RootNodePersistenceManager {
             writeOnLocalStorage();
 
             //update view
-            buildViewsByNodeChildren();
+            addNodeUpdateView();
         }
     }
 
     /**
      * build view by node children
      */
-    public void buildViewsByNodeChildren() {
-        onNodeVisitCompletedLst.get().setParentNode(currentTreeNode);
-        onNodeVisitCompletedLst.get().addNodes(currentTreeNode.getChildren());
+    public void addNodeUpdateView() {
+        if (onNodeVisitCompletedLst.get() != null) {
+            onNodeVisitCompletedLst.get().setParentNode(currentTreeNode);
+            onNodeVisitCompletedLst.get().addNodes(currentTreeNode.getChildren());
+        }
+    }
+
+    /**
+     * build view by node children
+     */
+    public void removeNodeUpdateView(TreeNode chiild) {
+        if (onNodeVisitCompletedLst.get() != null) {
+            onNodeVisitCompletedLst.get().removeNode(chiild);
+        }
     }
 
     /**

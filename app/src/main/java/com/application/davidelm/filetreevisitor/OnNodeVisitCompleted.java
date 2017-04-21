@@ -14,4 +14,6 @@ public interface OnNodeVisitCompleted {
     void removeFolder(String name);
 
     void setParentNode(TreeNode parentNode);
+
+    void removeNode(TreeNode childNode);
 }

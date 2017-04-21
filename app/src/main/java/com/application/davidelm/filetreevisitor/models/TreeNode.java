@@ -67,6 +67,9 @@ public class TreeNode implements Serializable {
     }
 
     public int deleteChild(TreeNode child) {
+        if (children.size() == 0)
+            return -1;
+
         for (int i = 0; i < children.size(); i++) {
             if (child.mId == children.get(i).mId) {
                 children.remove(i);
@@ -204,7 +207,7 @@ public class TreeNode implements Serializable {
         this.level = level;
     }
 
-    public TreeNode getChildPosByName(String name) {
+    public TreeNode getChildByName(String name) {
         for (TreeNode item : children) {
             if (item.getValue().equals(name)) {
                 return item;
