@@ -21,6 +21,7 @@ import com.application.davidelm.filetreevisitor.decorator.SpaceItemDecorator;
 import com.application.davidelm.filetreevisitor.models.RootNodePersistenceManager;
 import com.application.davidelm.filetreevisitor.models.TreeNode;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,7 +171,15 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
      * @param name
      */
     public void addFolder(String name) {
-        displayNodeListModel.addNode(name, true);
+        try {
+            displayNodeListModel.addNode(name, true);
+        } catch (IOException e) {
+            showError(e.getMessage());
+        }
+    }
+
+    private void showError(String message) {
+        Snackbar.make(this, "Oh Snap " + message, Snackbar.LENGTH_SHORT).show();
     }
 
     /**
@@ -178,7 +187,11 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
      * @param name
      */
     public void addFile(String name) {
-        displayNodeListModel.addNode(name, false);
+        try {
+            displayNodeListModel.addNode(name, false);
+        } catch (IOException e) {
+            showError(e.getMessage());
+        }
     }
 
     /**
@@ -186,7 +199,12 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
      * @param name
      */
     public void removeFolder(String name) {
-        displayNodeListModel.removeNode(currentNode.getChildByName(name));
+        try {
+            displayNodeListModel.removeNode(currentNode.getChildByName(name));
+        } catch (IOException e) {
+            showError(e.getMessage());
+        }
+
     }
 
     /**
@@ -194,6 +212,11 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
      * @param position
      */
     public void removeFolder(int position) {
-        displayNodeListModel.removeNode(currentNode.getChildren().get(position));
+        try {
+
+            displayNodeListModel.removeNode(currentNode.getChildren().get(position));
+        } catch (IOException e) {
+            showError(e.getMessage());
+        }
     }
 }

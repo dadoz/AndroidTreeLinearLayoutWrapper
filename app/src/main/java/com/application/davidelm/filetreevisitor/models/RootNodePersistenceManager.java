@@ -6,9 +6,9 @@ import android.util.Log;
 
 import com.application.davidelm.filetreevisitor.OnNodeVisitCompleted;
 import com.application.davidelm.filetreevisitor.helper.SharedPrefHelper;
-import com.application.davidelm.filetreevisitor.utils.Utils;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -66,27 +66,35 @@ public class RootNodePersistenceManager {
      * add node
      * not optimized
      */
-    public void removeNode(TreeNode node) {
-        if (currentTreeNode != null) {
-            currentTreeNode.deleteChild(node);
-
-            removeNodeUpdateView(node);
+    public void removeNode(TreeNode node) throws IOException {
+        if (currentTreeNode == null ||
+                node == null) {
+            throw new IOException("not ofound");
         }
+
+        currentTreeNode.deleteChild(node);
+        //save on storage
+        writeOnLocalStorage();
+        //update view
+        removeNodeUpdateView(node);
     }
     /**
      * add node
      * not optimized
      */
-    public void addNode(String nodeName, boolean folder) {
-        if (currentTreeNode != null) {
-            currentTreeNode.addChild(new TreeNode(nodeName, folder, currentTreeNode.getLevel() + 1));
-
-            //save on storage
-            writeOnLocalStorage();
-
-            //update view
-            addNodeUpdateView();
+    public void addNode(String nodeName, boolean folder) throws IOException {
+        if (currentTreeNode == null ||
+                nodeName.equals("")) {
+            throw new IOException("not ofound");
         }
+
+        currentTreeNode.addChild(new TreeNode(nodeName, folder, currentTreeNode.getLevel() + 1));
+
+        //save on storage
+        writeOnLocalStorage();
+
+        //update view
+        addNodeUpdateView();
     }
 
     /**
