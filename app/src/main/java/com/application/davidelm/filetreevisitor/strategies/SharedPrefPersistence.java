@@ -1,17 +1,49 @@
-package com.application.davidelm.filetreevisitor.helper;
+package com.application.davidelm.filetreevisitor.strategies;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
+import com.application.davidelm.filetreevisitor.models.TreeNode;
+import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
 
-public class SharedPrefHelper {
+public class SharedPrefPersistence implements PersistenceStrategyInterface {
+    private static final String TAG = "SharedPrefStrategy";
     private static SharedPreferences sharedPref;
+
+    /**
+     * reading on local storage
+     */
+    @Override
+    public TreeNode getPersistentNode() {
+        Log.e(TAG, "hey get node");
+        try {
+            return new Gson().fromJson(getValue(SharedPrefPersistence
+                    .SharedPrefKeysEnum.TREE_NODE, null).toString(), TreeNode.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * saving on local storage
+     */
+
+    @Override
+    public void setPersistentNode(TreeNode node) {
+        Log.e(TAG, new Gson().toJson(node));
+        setValue(SharedPrefPersistence.SharedPrefKeysEnum.TREE_NODE,
+                new Gson().toJson(node));
+
+    }
 
     public enum SharedPrefKeysEnum { TREE_NODE }
 
-    public SharedPrefHelper(WeakReference<Context> ctx) {
+    public SharedPrefPersistence(WeakReference<Context> ctx) {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(ctx.get());
     }
 
@@ -20,8 +52,10 @@ public class SharedPrefHelper {
      * @param defValue
      * @return
      */
-    public Object getValue(SharedPrefKeysEnum key, Object defValue) {
-        return sharedPref.getString(key.name(), (String) defValue);
+    private Object getValue(SharedPrefKeysEnum key, Object defValue) {
+        String temp = sharedPref.getString(key.name(), (String) defValue);
+        Log.e(TAG, temp);
+        return temp;
 //        if (defValue instanceof Boolean) {
 //            return sharedPref.getBoolean(key.name(), (boolean) defValue);
 //        }
@@ -38,7 +72,7 @@ public class SharedPrefHelper {
      * @param key
      * @param value
      */
-    public void setValue(SharedPrefKeysEnum key, Object value) {
+    private void setValue(SharedPrefKeysEnum key, Object value) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(key.name(), (String) value);
         editor.apply();
@@ -51,4 +85,5 @@ public class SharedPrefHelper {
 //            editor.putString(key.name(), "bla");
 //        }
     }
+
 }

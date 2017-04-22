@@ -1,22 +1,23 @@
-package com.application.davidelm.filetreevisitor.models;
+package com.application.davidelm.filetreevisitor.manager;
 
 
 import android.content.Context;
 import android.util.Log;
 
 import com.application.davidelm.filetreevisitor.OnNodeVisitCompleted;
-import com.application.davidelm.filetreevisitor.helper.SharedPrefHelper;
-import com.google.gson.Gson;
+import com.application.davidelm.filetreevisitor.models.TreeNode;
+import com.application.davidelm.filetreevisitor.strategies.PersistenceStrategy;
+import com.application.davidelm.filetreevisitor.strategies.PersistenceStrategy.PersistenceType;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class RootNodePersistenceManager {
+public class RootNodeManager {
     private static final String TAG = "RootNodePersistence";
-    private static RootNodePersistenceManager instance;
+    private static RootNodeManager instance;
+    private final PersistenceStrategy persistenceStrategy;
     private TreeNode root;
-    private final SharedPrefHelper sharedPref;
     private WeakReference<OnNodeVisitCompleted> onNodeVisitCompletedLst;
     private TreeNode currentTreeNode; //TODO make it persistent
 
@@ -24,14 +25,17 @@ public class RootNodePersistenceManager {
      * build manager
      * @param context
      */
-    private RootNodePersistenceManager(WeakReference<Context> context) {
-        this.sharedPref = new SharedPrefHelper(context);
+    private RootNodeManager(WeakReference<Context> context) {
+        persistenceStrategy = new PersistenceStrategy(context, PersistenceType.SHARED_PREF);
 
         //check parsed node
-        if ((root = readByLocalStorage()) == null) {
+        if ((root = persistenceStrategy.getStrategy().getPersistentNode()) == null) {
             root = initRootNode();
-            writeOnLocalStorage();
+            persistenceStrategy.getStrategy().setPersistentNode(root);
         }
+
+        //update parent current nodes
+        updateParentOnCurrentNode(root, TreeNode.ROOT_LEVEL);
 
         //init current node
         currentTreeNode = root;
@@ -58,8 +62,8 @@ public class RootNodePersistenceManager {
      *
      * @return
      */
-    public static RootNodePersistenceManager getInstance(WeakReference<Context> context) {
-        return instance == null ? instance = new RootNodePersistenceManager(context) : instance;
+    public static RootNodeManager getInstance(WeakReference<Context> context) {
+        return instance == null ? instance = new RootNodeManager(context) : instance;
     }
 
     /**
@@ -69,12 +73,12 @@ public class RootNodePersistenceManager {
     public void removeNode(TreeNode node) throws IOException {
         if (currentTreeNode == null ||
                 node == null) {
-            throw new IOException("not ofound");
+            throw new IOException("not found");
         }
 
         currentTreeNode.deleteChild(node);
         //save on storage
-        writeOnLocalStorage();
+        persistenceStrategy.getStrategy().setPersistentNode(root);
         //update view
         removeNodeUpdateView(node);
     }
@@ -85,13 +89,13 @@ public class RootNodePersistenceManager {
     public void addNode(String nodeName, boolean folder) throws IOException {
         if (currentTreeNode == null ||
                 nodeName.equals("")) {
-            throw new IOException("not ofound");
+            throw new IOException("not found");
         }
 
         currentTreeNode.addChild(new TreeNode(nodeName, folder, currentTreeNode.getLevel() + 1));
 
         //save on storage
-        writeOnLocalStorage();
+        persistenceStrategy.getStrategy().setPersistentNode(root);
 
         //update view
         addNodeUpdateView();
@@ -124,29 +128,6 @@ public class RootNodePersistenceManager {
         this.currentTreeNode = currentTreeNode;
     }
 
-    /**
-     * saving on local storage
-     */
-    public void writeOnLocalStorage() {
-        Log.e(TAG, new Gson().toJson(root));
-        sharedPref.setValue(SharedPrefHelper.SharedPrefKeysEnum.TREE_NODE,
-                new Gson().toJson(root));
-    }
-
-    /**
-     * reading on local storage
-     */
-    public TreeNode readByLocalStorage() {
-        try {
-            currentTreeNode = new Gson().fromJson(sharedPref.getValue(SharedPrefHelper
-                    .SharedPrefKeysEnum.TREE_NODE, null).toString(), TreeNode.class);
-            updateParentOnCurrentNode(currentTreeNode, TreeNode.ROOT_LEVEL);
-        } catch (Exception e) {
-            e.printStackTrace();
-            currentTreeNode = null;
-        }
-        return currentTreeNode;
-    }
 
     /**
      * recursion to handle se parent on each node

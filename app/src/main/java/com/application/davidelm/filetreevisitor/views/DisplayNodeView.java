@@ -18,7 +18,7 @@ import com.application.davidelm.filetreevisitor.OnNodeVisitCompleted;
 import com.application.davidelm.filetreevisitor.R;
 import com.application.davidelm.filetreevisitor.adapter.TreeNodeAdapter;
 import com.application.davidelm.filetreevisitor.decorator.SpaceItemDecorator;
-import com.application.davidelm.filetreevisitor.models.RootNodePersistenceManager;
+import com.application.davidelm.filetreevisitor.manager.RootNodeManager;
 import com.application.davidelm.filetreevisitor.models.TreeNode;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
     private TreeNode currentNode;
     private TreeNode rootNode;
     private BreadCrumbsView breadCrumbsView;
-    private RootNodePersistenceManager displayNodeListModel;
+    private RootNodeManager displayNodeListModel;
 
     public DisplayNodeView(@NonNull Context context) {
         super(context);
@@ -58,7 +58,7 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
     public void initView() {
         inflate(getContext(), R.layout.display_node_layout, this);
         treeNodeRecyclerView = (RecyclerView) findViewById(R.id.treeNodeRecyclerViewId);
-        displayNodeListModel = RootNodePersistenceManager.getInstance(new WeakReference<>(getContext()));
+        displayNodeListModel = RootNodeManager.getInstance(new WeakReference<>(getContext()));
 
         //displayNodeListModel.getRootNode();
         displayNodeListModel.init(new WeakReference<>(this));
