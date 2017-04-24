@@ -55,26 +55,31 @@ public class TreeNodeView extends FrameLayout implements OnNodeClickListener, On
         initView();
     }
 
-    public void setNavigationCallbacksListener(WeakReference<OnNavigationCallbacks> lst) {
-        this.lst = lst;
-    }
+    /**
+     * init view
+     */
     public void initView() {
         inflate(getContext(), R.layout.tree_node_layout, this);
         treeNodeRecyclerView = (RecyclerView) findViewById(R.id.treeNodeRecyclerViewId);
         displayNodeListModel = RootNodeManager.getInstance(new WeakReference<>(getContext()));
-
-        //displayNodeListModel.getRootNode();
         displayNodeListModel.init(new WeakReference<>(this));
     }
 
     /**
-     *
+     * set listener on cb
+     * @param lst
+     */
+    public void setNavigationCallbacksListener(WeakReference<OnNavigationCallbacks> lst) {
+        this.lst = lst;
+    }
+
+    /**
+     * add custom item view :)
      */
     public void initRecyclerView() {
         treeNodeRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         treeNodeRecyclerView.addItemDecoration(new SpaceItemDecorator(getResources().getDimensionPixelSize(R.dimen.grid_space)));
         treeNodeRecyclerView.setAdapter(new TreeNodeAdapter(new ArrayList<>(), new WeakReference<>(this)));
-
     }
 
     /**
@@ -108,7 +113,7 @@ public class TreeNodeView extends FrameLayout implements OnNodeClickListener, On
         ((TreeNodeAdapter) treeNodeRecyclerView.getAdapter()).addItems(node.getChildren());
         treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
 
-        if (lst.get() != null)
+        if (lst != null && lst.get() != null)
             lst.get().onFolderNodeClickCb(position, node);
     }
 
@@ -133,10 +138,14 @@ public class TreeNodeView extends FrameLayout implements OnNodeClickListener, On
 
     @Override
     public void onFileNodeCLick(View v, int position, TreeNode node) {
-        if (lst.get() != null)
+        if (lst != null && lst.get() != null)
             lst.get().onFileNodeClickCb(position, node);
     }
 
+    /**
+     * on back pressed cb
+     * @return
+     */
     public boolean onBackPressed() {
         boolean isRootNode = updateCurrentNode(null);
         if (!isRootNode) {
@@ -185,8 +194,13 @@ public class TreeNodeView extends FrameLayout implements OnNodeClickListener, On
         }
     }
 
+    /**
+     * show error cb
+     * @param type
+     * @param message
+     */
     private void showError(int type, String message) {
-        if (lst.get() != null)
+        if (lst != null && lst.get() != null)
             lst.get().onNodeError(type, currentNode, message);
     }
 
