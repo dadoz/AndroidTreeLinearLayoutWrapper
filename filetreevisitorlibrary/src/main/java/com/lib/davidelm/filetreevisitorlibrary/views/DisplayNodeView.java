@@ -33,6 +33,7 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
     private TreeNode rootNode;
     private BreadCrumbsView breadCrumbsView;
     private RootNodeManager displayNodeListModel;
+    private WeakReference<OnNavigationCallbacks> lst;
 
     public DisplayNodeView(@NonNull Context context) {
         super(context);
@@ -54,6 +55,9 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
         initView();
     }
 
+    public void setNavigationCallbacksListener(WeakReference<OnNavigationCallbacks> lst) {
+        this.lst = lst;
+    }
     public void initView() {
         inflate(getContext(), R.layout.display_node_layout, this);
         treeNodeRecyclerView = (RecyclerView) findViewById(R.id.treeNodeRecyclerViewId);
@@ -103,6 +107,9 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
         updateCurrentNode(node);
         ((TreeNodeAdapter) treeNodeRecyclerView.getAdapter()).addItems(node.getChildren());
         treeNodeRecyclerView.getAdapter().notifyDataSetChanged();
+
+        if (lst.get() != null)
+            lst.get().onFolderNodeClickCb(position, node);
     }
 
     /**
@@ -126,8 +133,8 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
 
     @Override
     public void onFileNodeCLick(View v, int position, TreeNode node) {
-        //@TODO implement callback
-//        Snackbar.make(this, "file " + node.getValue() + " clicked", Snackbar.LENGTH_SHORT).show();
+        if (lst.get() != null)
+            lst.get().onFileNodeClickCb(position, node);
     }
 
     public boolean onBackPressed() {
@@ -174,13 +181,13 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
         try {
             displayNodeListModel.addNode(name, true);
         } catch (IOException e) {
-            showError(e.getMessage());
+            showError(0, e.getMessage());
         }
     }
 
-    private void showError(String message) {
-//        Snackbar.make(this, "Oh Snap " + message, Snackbar.LENGTH_SHORT).show();
-        //@TODO implement callback
+    private void showError(int type, String message) {
+        if (lst.get() != null)
+            lst.get().onNodeError(type, currentNode, message);
     }
 
     /**
@@ -191,7 +198,7 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
         try {
             displayNodeListModel.addNode(name, false);
         } catch (IOException e) {
-            showError(e.getMessage());
+            showError(1, e.getMessage());
         }
     }
 
@@ -203,7 +210,7 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
         try {
             displayNodeListModel.removeNode(currentNode.getChildByName(name));
         } catch (IOException e) {
-            showError(e.getMessage());
+            showError(2, e.getMessage());
         }
 
     }
@@ -214,10 +221,9 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
      */
     public void removeFolder(int position) {
         try {
-
             displayNodeListModel.removeNode(currentNode.getChildren().get(position));
         } catch (IOException e) {
-            showError(e.getMessage());
+            showError(2, e.getMessage());
         }
     }
 }

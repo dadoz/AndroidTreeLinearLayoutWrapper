@@ -6,10 +6,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.lib.davidelm.filetreevisitorlibrary.models.TreeNode;
 import com.lib.davidelm.filetreevisitorlibrary.views.BreadCrumbsView;
 import com.lib.davidelm.filetreevisitorlibrary.views.DisplayNodeView;
+import com.lib.davidelm.filetreevisitorlibrary.views.OnNavigationCallbacks;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import java.lang.ref.WeakReference;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnNavigationCallbacks {
 
     private DisplayNodeView displayNodeView;
     private String TAG = "Display";
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void injectViews() {
         BreadCrumbsView breadCrumbsView = ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId));
         displayNodeView = ((DisplayNodeView) findViewById(R.id.displayNodeViewId));
+        displayNodeView.setNavigationCallbacksListener(new WeakReference<>(this));
         displayNodeView.setBreadCrumbsView(breadCrumbsView);
     }
 
@@ -43,8 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onBackPressed() {
-        if (!((DisplayNodeView) findViewById(R.id.displayNodeViewId))
-                .onBackPressed())
+        if (!displayNodeView.onBackPressed())
             super.onBackPressed();
     }
 
@@ -52,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.removeNodeButtonId:
-                Log.e(TAG, "jey");
                 displayNodeView.removeFolder(((EditText) findViewById(R.id.nodeValueEditTextId)).getText().toString());
                 break;
             case R.id.addFolderButtonId:
@@ -62,5 +65,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 displayNodeView.addFile(((EditText) findViewById(R.id.nodeValueEditTextId)).getText().toString());
                 break;
         }
+    }
+
+    @Override
+    public void onNodeError(int type, TreeNode currentNode, String message) {
+        Log.e(TAG, "hey" + message);
+    }
+
+    @Override
+    public void onFolderNodeClickCb(int position, TreeNode node) {
+        Log.e(TAG, "FOLDER" + node.getValue());
+    }
+
+    @Override
+    public void onFileNodeClickCb(int position, TreeNode node) {
+        Log.e(TAG, "FILE" + node.getValue());
     }
 }

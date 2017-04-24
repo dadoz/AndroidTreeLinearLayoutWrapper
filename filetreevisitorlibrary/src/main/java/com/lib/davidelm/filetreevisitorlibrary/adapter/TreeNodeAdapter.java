@@ -43,8 +43,8 @@ public class TreeNodeAdapter extends RecyclerView.Adapter<TreeNodeAdapter.ViewHo
                 lst.get().onFileNodeCLick(v, position, item);
         });
         holder.nodeLabelText.setText(items.get(position).getValue().toString());
-//        holder.nodeIconImage.setImageDrawable(ContextCompat.getDrawable(holder.itemView.getContext(),
-//                items.get(position).isFolder() ? R.mipmap.ic_folder : R.mipmap.ic_file));
+        holder.nodeIconImage.setImageDrawable(ContextCompat.getDrawable(holder.itemView.getContext(),
+                items.get(position).isFolder() ? R.mipmap.ic_folder : R.mipmap.ic_file));
     }
 
     @Override
