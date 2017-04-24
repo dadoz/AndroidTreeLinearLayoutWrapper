@@ -25,7 +25,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DisplayNodeView extends FrameLayout implements OnNodeClickListener, OnNodeVisitCompleted,
+public class TreeNodeView extends FrameLayout implements OnNodeClickListener, OnNodeVisitCompleted,
         BreadCrumbsView.OnPopBackStackInterface {
     private RecyclerView treeNodeRecyclerView;
     private String TAG = "TAG";
@@ -35,22 +35,22 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
     private RootNodeManager displayNodeListModel;
     private WeakReference<OnNavigationCallbacks> lst;
 
-    public DisplayNodeView(@NonNull Context context) {
+    public TreeNodeView(@NonNull Context context) {
         super(context);
         initView();
     }
 
-    public DisplayNodeView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public TreeNodeView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initView();
     }
 
-    public DisplayNodeView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+    public TreeNodeView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
     }
 
-    public DisplayNodeView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
+    public TreeNodeView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initView();
     }
@@ -59,7 +59,7 @@ public class DisplayNodeView extends FrameLayout implements OnNodeClickListener,
         this.lst = lst;
     }
     public void initView() {
-        inflate(getContext(), R.layout.display_node_layout, this);
+        inflate(getContext(), R.layout.tree_node_layout, this);
         treeNodeRecyclerView = (RecyclerView) findViewById(R.id.treeNodeRecyclerViewId);
         displayNodeListModel = RootNodeManager.getInstance(new WeakReference<>(getContext()));
 

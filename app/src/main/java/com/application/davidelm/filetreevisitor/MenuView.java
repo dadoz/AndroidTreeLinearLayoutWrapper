@@ -1,11 +1,8 @@
-package com.lib.davidelm.filetreevisitorlibrary.views;
+package com.application.davidelm.filetreevisitor;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
-
-import com.lib.davidelm.filetreevisitorlibrary.R;
-
 
 public class MenuView extends RelativeLayout {
     public MenuView(Context context) {

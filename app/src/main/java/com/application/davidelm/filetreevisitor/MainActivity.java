@@ -8,14 +8,14 @@ import android.widget.EditText;
 
 import com.lib.davidelm.filetreevisitorlibrary.models.TreeNode;
 import com.lib.davidelm.filetreevisitorlibrary.views.BreadCrumbsView;
-import com.lib.davidelm.filetreevisitorlibrary.views.DisplayNodeView;
+import com.lib.davidelm.filetreevisitorlibrary.views.TreeNodeView;
 import com.lib.davidelm.filetreevisitorlibrary.views.OnNavigationCallbacks;
 
 import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnNavigationCallbacks {
 
-    private DisplayNodeView displayNodeView;
+    private TreeNodeView displayNodeView;
     private String TAG = "Display";
 
     @Override
@@ -28,9 +28,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void onInitView() {
         injectViews();
 
-        findViewById(R.id.addFolderButtonId).setOnClickListener(this);
-        findViewById(R.id.addFileButtonId).setOnClickListener(this);
-        findViewById(R.id.removeNodeButtonId).setOnClickListener(this);
+        findViewById(R.id.menuViewId).findViewById(R.id.addFolderButtonId).setOnClickListener(this);
+        findViewById(R.id.menuViewId).findViewById(R.id.addFileButtonId).setOnClickListener(this);
+        findViewById(R.id.menuViewId).findViewById(R.id.removeNodeButtonId).setOnClickListener(this);
     }
 
     /**
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void injectViews() {
         BreadCrumbsView breadCrumbsView = ((BreadCrumbsView) findViewById(R.id.breadCrumbsViewId));
-        displayNodeView = ((DisplayNodeView) findViewById(R.id.displayNodeViewId));
+        displayNodeView = ((TreeNodeView) findViewById(R.id.displayNodeViewId));
         displayNodeView.setNavigationCallbacksListener(new WeakReference<>(this));
         displayNodeView.setBreadCrumbsView(breadCrumbsView);
     }

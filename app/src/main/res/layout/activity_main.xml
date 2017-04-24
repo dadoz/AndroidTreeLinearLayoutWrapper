@@ -10,9 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <com.lib.davidelm.filetreevisitorlibrary.views.DisplayNodeView
-        android:id="@+id/displayNodeViewId"
+    <com.application.davidelm.filetreevisitor.MenuView
+        android:id="@+id/menuViewId"
         android:layout_below="@id/breadCrumbsViewId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.lib.davidelm.filetreevisitorlibrary.views.TreeNodeView
+        android:id="@+id/displayNodeViewId"
+        android:layout_below="@id/menuViewId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </RelativeLayout>
