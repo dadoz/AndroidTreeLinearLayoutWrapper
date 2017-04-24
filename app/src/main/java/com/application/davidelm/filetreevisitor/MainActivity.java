@@ -6,9 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.application.davidelm.filetreevisitor.views.BreadCrumbsView;
-import com.application.davidelm.filetreevisitor.views.DisplayNodeView;
-
+import com.lib.davidelm.filetreevisitorlibrary.views.BreadCrumbsView;
+import com.lib.davidelm.filetreevisitorlibrary.views.DisplayNodeView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
